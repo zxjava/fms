@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -25,31 +26,7 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = {"","/"})
-    public ModelAndView index(HttpServletRequest req){
-        HttpSession session=req.getSession();
-        if(null == session.getAttribute("loginUser")){
-            return new ModelAndView("index");
-        }else{
-            //转发 接口：分页查询出用户所有文件
-
-            return new ModelAndView("resourceList");
-        }
-    }
-
-    @RequestMapping(value = "/index")
-    public ModelAndView index1(HttpServletRequest req){
-        HttpSession session=req.getSession();
-        if(null == session.getAttribute("loginUser")){
-            return new ModelAndView("index");
-        }else{
-//转发 接口：分页查询出用户所有文件
-
-            return new ModelAndView("resourceList");
-        }
-    }
-
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @RequestMapping(value = "/loginUser",method = RequestMethod.POST)
     public ResultTO pcLogin(HttpServletRequest req,@RequestBody User user)throws CommonException{
         ResultTO result=new ResultTO();
         if(null == user){
@@ -72,7 +49,29 @@ public class IndexController {
         return result;
     }
 
+    @RequestMapping(value = "/login")
+    public ModelAndView login(HttpServletRequest req,HttpServletResponse res){
+        return new ModelAndView("/login");
+    }
 
+    @RequestMapping(value = "/index")
+    public ModelAndView getResourceList1(HttpServletRequest req,HttpServletResponse res){
+        HttpSession session=req.getSession();
+        if(null == session.getAttribute("loginUser")){
+            return new ModelAndView("redirect:/login");
+        }
 
+        return new ModelAndView("/index");
+    }
+
+    @RequestMapping(value = {"","/"})
+    public ModelAndView getResourceList(HttpServletRequest req,HttpServletResponse res){
+        HttpSession session=req.getSession();
+        if(null == session.getAttribute("loginUser")){
+            return new ModelAndView("redirect:/login");
+        }
+
+        return new ModelAndView("/index");
+    }
 
 }

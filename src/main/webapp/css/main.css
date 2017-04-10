@@ -1,0 +1,16 @@
+.upload{
+    display: inline-block;
+    width:300px;
+}
+.upload-btn{
+    position: relative;
+    margin:0px 5px;
+}
+.upload-btn .upload-inp{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    line-height:34px;
+    width:54px;
+}
