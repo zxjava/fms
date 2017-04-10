@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	         http://www.springframework.org/schema/beans/spring-beans.xsd
+	         http://www.springframework.org/schema/tx
+	         http://www.springframework.org/schema/tx/spring-tx.xsd
+	         http://www.springframework.org/schema/aop
+	         http://www.springframework.org/schema/aop/spring-aop.xsd
+	         http://www.springframework.org/schema/context
+	         http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+	<!-- 引用Properties配置文件 -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 注解注入 -->
+	<context:annotation-config />
+
+	<tx:annotation-driven />
+
+	<!-- 自动注册Bean支持 -->
+	<context:component-scan base-package="com.fms">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+
+	<!-- RestTemplate -->
+	<bean class="org.springframework.web.client.RestTemplate">
+		<property name="messageConverters">
+			<list>
+				<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 数据源 org.apache.commons.dbcp.BasicDataSource com.alibaba.druid.pool.DruidDataSource -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="30" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+
+		<!-- 监控数据库 -->
+		<!-- <property name="filters" value="stat" /> -->
+		<property name="filters" value="mergeStat" />
+	</bean>
+
+	<!-- 配置druid监控spring jdbc -->
+	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		  scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.shpj.legal.com.fms.service.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+
+	<!-- ScanMapperFiles -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.fms.mapper" />
+	</bean>
+
+	<!-- 创建SqlSessionFactory，同时指定数据源与pojo映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis.xml" />
+		<property name="mapperLocations" value="classpath:mybatis/*Mapper.xml"/>
+		<property name="typeAliasesPackage" value="com.fms.model"/>
+	</bean>
+
+	<!-- Transaction manager for a single JDBC DataSource -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- enable transaction demarcation with annotations -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<bean id="tranProxyTemplate"  class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+		<property name="transactionManager" ref="transactionManager">
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="select*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="page*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="has*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="is*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="check*">PROPAGATION_REQUIRED,readOnly</prop>
+
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="create*">PROPAGATION_REQUIRED</prop>
+				<prop key="new*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="modify*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="batchDelete*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<!--<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>-->
+
+	<!--<task:scheduler id="qbScheduler" pool-size="10"/>-->
+
+</beans>
