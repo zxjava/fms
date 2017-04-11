@@ -109,8 +109,8 @@
                 <div style="margin:50px 0px 50px 0px;">
                     <input type="text" id="fileName" class="form-control upload" readonly>
                     <a href="javascript:;" class="btn btn-default upload-btn">
-                        <input type="file" name="file" id="file" class="upload-inp"/>
                         浏览</a>
+                    <input type="file" name="file" id="file" class="upload-inp"/>
                 </div>
             </div>
             <div class="modal-footer">
@@ -124,11 +124,14 @@
 
 <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.loadingoverlay/latest/loadingoverlay.min.js"></script>
 <script>
 
     $(function(){
 
-
+        $(".upload-btn").click(function(event){
+            $("#file").click();
+        });
 
 
 //        var fd = new FormData();
@@ -138,7 +141,6 @@
         });
 
         $("#upload").click(function(){
-            console.log($("#file").files);
             if(!$("#file") || $("#file").length<0 || !$("#file")[0].files || $("#file")[0].files.length<=0){
                 alert("请选择要上传的文件！");
                 return ;
@@ -149,8 +151,30 @@
             var fileType=fileInput.files[0].name.split(".")[fileInput.files[0].name.split(".").length-1];
             if(!fileInput.files[0].type || fileTypes.indexOf(fileType)<0){
                 alert("文件格式非法！");
+                return ;
             }
-            console.log(fileInput.files[0]);
+
+            var fd=new FormData();
+            fd.append("file",fileInput.files[0]);
+            $.ajax({
+                url:"/upload",
+                type:"POST",
+                cache:false,
+                data:fd,
+                processData:false,
+                contentType:false,
+                beforeSend:function(req){
+                    $.LoadingOverlay('show');
+                },
+                success:function(data){
+                    $.LoadingOverlay("hide");
+                    if(data && data.code && data.code==200){
+                        alert("上传成功");
+                    }else{
+                        alert(data.msg);
+                    }
+                }
+            });
         });
 
     })

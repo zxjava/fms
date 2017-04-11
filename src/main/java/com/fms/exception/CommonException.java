@@ -7,7 +7,6 @@ public class CommonException extends RuntimeException {
 
 	/**
 	 * @param message
-	 *            原异常信息
 	 */
 	public CommonException(String message) {
 		super(message);
@@ -15,7 +14,6 @@ public class CommonException extends RuntimeException {
 
 	/**
 	 * @param message
-	 *            异常信息
 	 */
 	public CommonException(String message, Exception e) {
 		super(message, e);

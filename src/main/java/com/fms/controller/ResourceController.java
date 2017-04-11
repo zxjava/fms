@@ -35,15 +35,18 @@ public class ResourceController {
             throw new CommonException("用户未登录！");
         }
 
-        try {
-            if(null == file){
-                throw new CommonException("请选择文件！");
-            }
-            System.out.println(file.getOriginalFilename());
-
-        }catch (Exception e){
-            e.printStackTrace();
+        if(null == file){
+            throw new CommonException("请选择文件！");
         }
+        String originalName=file.getOriginalFilename();
+        String fileSuffix=originalName.split("\\.")[originalName.split("\\.").length-1];
+        if(FILE_FORMAT.indexOf(fileSuffix)<0){
+            throw new CommonException("文件格式不合法！");
+        }
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.getName());
+        System.out.println(file.getContentType());
+        System.out.println(file.getSize());
 
 
         return result;

@@ -6,11 +6,12 @@
     position: relative;
     margin:0px 5px;
 }
-.upload-btn .upload-inp{
+.upload-inp{
     position: absolute;
     left: 0;
     top: 0;
     opacity: 0;
-    line-height:34px;
-    width:54px;
+    /*line-height:34px;*/
+    width:0px;
+    /*display: none;*/
 }

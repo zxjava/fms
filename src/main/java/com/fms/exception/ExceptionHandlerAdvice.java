@@ -21,7 +21,7 @@ public class ExceptionHandlerAdvice {
         result.setSuccess(false);
         result.setCode(500);
         e.printStackTrace();
-        result.setMsg("·şÎñÆ÷´íÎó");
+        result.setMsg("æœåŠ¡å™¨ç¹å¿™ï¼");
         return result;
     }
 
