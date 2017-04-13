@@ -27,8 +27,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-12">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">文件列表</a></li>
-                <li><a href="/">用户管理</a></li>
-                <li><a href="/">退出</a></li>
+                <c:if test="${sessionScope.loginUser.userType==1}">
+                    <li><a href="/">用户管理</a></li>
+                </c:if>
+                <li><a href="/logout">退出</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -68,23 +70,30 @@
                 <tr>
                     <th>文件名称</th>
                     <th>文件大小</th>
-                    <th>文件类型</th>
                     <th>文件格式</th>
                     <th>上传时间</th>
-                    <th>最后修改时间</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach items="10" var="item" varStatus="loop">
+                <c:forEach items="${requestScope.result.result}" var="item" varStatus="loop">
                     <tr>
-                        <td>文件名称${loop.index+1}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            ${item.originName}
+                        </td>
+                        <td>${item.resourceSize}</td>
+                        <td>${item.format}</td>
+                        <td><fmt:formatDate value="${item.createTime}" type="both" dateStyle="long"/></td>
+                        <td>
+                            <a href="/resource/${item.resourceId}" class="btn btn-primary">下载</a>
+                            <c:if test="${item.type==2}">
+                                <a class="btn btn-success" href="/resources/${item.resourceName}" target="_blank">预览</a>
+                            </c:if>
+                            <c:if test="${item.type==1 && item.resourceSize<=10485760}">
+                                <a class="btn btn-success" href="/resources/${item.resourceName}" target="_blank">播放视频</a>
+                            </c:if>
+                            <a class="btn btn-danger" href="/delete/${item.resourceId}">删除</a>
+                        </td>
                     </tr>
                 </c:forEach>
             </tbody>
@@ -129,6 +138,7 @@
 
     $(function(){
 
+
         $(".upload-btn").click(function(event){
             $("#file").click();
         });
@@ -169,6 +179,7 @@
                 success:function(data){
                     $.LoadingOverlay("hide");
                     if(data && data.code && data.code==200){
+                        history.go(0);
                         alert("上传成功");
                     }else{
                         alert(data.msg);

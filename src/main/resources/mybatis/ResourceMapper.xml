@@ -6,4 +6,29 @@
 <mapper namespace="com.fms.mapper.ResourceMapper">
 
 
+    <insert id="addResource" parameterType="Resource" keyProperty="resourceId" useGeneratedKeys="true">
+        insert into resource(userId,originName,resourceName,resourceSize,format,`type`,createTime,updateTime)
+        values(#{userId},#{originName},#{resourceName},#{resourceSize},#{format},#{type},now(),now())
+    </insert>
+
+    <select id="getResourceById" resultType="Resource">
+        select * from resource where userId=#{userId} and resourceId=#{resourceId}
+    </select>
+
+    <select id="getResourceList" resultType="Resource">
+        select * from resource where userId=#{userId}
+        <if test="keyword!=null and keyword!=''">
+            and originName like concat("%",#{keyword},"%")
+        </if>
+        order by createTime desc limit #{startIndex},#{pageSize}
+    </select>
+
+    <select id="getResourceCount" resultType="int">
+        select count(*) from resource where userId=#{userId}
+        <if test="keyword!=null and keyword!=''">
+            and originName like concat("%",#{keyword},"%")
+        </if>
+    </select>
+
+
 </mapper>

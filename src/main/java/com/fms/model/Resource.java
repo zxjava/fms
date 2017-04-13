@@ -8,20 +8,32 @@ import java.util.Date;
 public class Resource implements java.io.Serializable {
 
 
-    public static final Integer TYPE_IMG = 0 ;
-    public static final Integer TYPE_DOCUMENT = 1;
-    public static final Integer TYPE_VIDEO =2;
 
     private Integer resourceId;
     private Integer userId;
     private String originName;
     private String resourceName;
-    private Integer resourceSize;
+    private Long resourceSize;
     private String  format;
     private Integer type;
     private Date createTime;
     private Date updateTime;
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Long getResourceSize() {
+        return resourceSize;
+    }
+
+    public void setResourceSize(Long resourceSize) {
+        this.resourceSize = resourceSize;
+    }
 
     public Integer getResourceId() {
         return resourceId;
@@ -55,14 +67,6 @@ public class Resource implements java.io.Serializable {
         this.resourceName = resourceName;
     }
 
-    public Integer getResourceSize() {
-        return resourceSize;
-    }
-
-    public void setResourceSize(Integer resourceSize) {
-        this.resourceSize = resourceSize;
-    }
-
     public String getFormat() {
         return format;
     }
@@ -71,13 +75,6 @@ public class Resource implements java.io.Serializable {
         this.format = format;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
 
     public Date getCreateTime() {
         return createTime;

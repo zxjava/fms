@@ -3,6 +3,7 @@ package com.fms.controller;
 import com.fms.dto.ResultTO;
 import com.fms.exception.CommonException;
 import com.fms.model.User;
+import com.fms.service.ResourceService;
 import com.fms.service.UserService;
 import com.fms.util.EncryptUtils;
 import com.fms.util.StringUtil;
@@ -25,6 +26,9 @@ public class IndexController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @RequestMapping(value = "/loginUser",method = RequestMethod.POST)
     public ResultTO pcLogin(HttpServletRequest req,@RequestBody User user)throws CommonException{
@@ -55,23 +59,42 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/index")
-    public ModelAndView getResourceList1(HttpServletRequest req,HttpServletResponse res){
+    public ModelAndView getResourceList1(HttpServletRequest req,HttpServletResponse res,String keyword,
+                                         Integer page){
         HttpSession session=req.getSession();
         if(null == session.getAttribute("loginUser")){
             return new ModelAndView("redirect:/login");
         }
-
+        User loginUser=(User)session.getAttribute("loginUser");
+        if(null == page || page<=0){
+            page=1;
+        }
+        req.setAttribute("result",resourceService.getResourceList(loginUser.getUserId(),keyword,page,10));
         return new ModelAndView("/index");
     }
 
     @RequestMapping(value = {"","/"})
-    public ModelAndView getResourceList(HttpServletRequest req,HttpServletResponse res){
+    public ModelAndView getResourceList(HttpServletRequest req,HttpServletResponse res,String keyword,
+                                        Integer page){
         HttpSession session=req.getSession();
         if(null == session.getAttribute("loginUser")){
             return new ModelAndView("redirect:/login");
         }
-
+        User loginUser=(User)session.getAttribute("loginUser");
+        if(null == page || page<=0){
+            page=1;
+        }
+        req.setAttribute("result",resourceService.getResourceList(loginUser.getUserId(),keyword,page,10));
         return new ModelAndView("/index");
+    }
+
+    @RequestMapping(value = "/logout")
+    public ModelAndView logout(HttpServletRequest req){
+        HttpSession session=req.getSession();
+        if(null != session.getAttribute("loginUser")){
+            session.removeAttribute("loginUser");
+        }
+        return new ModelAndView("/login");
     }
 
 }
