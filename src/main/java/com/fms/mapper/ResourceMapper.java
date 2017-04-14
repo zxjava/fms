@@ -22,4 +22,6 @@ public interface ResourceMapper {
 
     Integer getResourceCount(@Param("userId")Integer userId,@Param("keyword")String word);
 
+    Integer deleteResource(@Param("userId")Integer userId,@Param("resourceId")Integer resourceId);
+
 }

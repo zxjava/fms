@@ -46,5 +46,10 @@ public class ResourceService {
         return result;
     }
 
+    public Integer deleteResource(Integer userId,Integer resourceId){
+
+
+        return resourceMapper.deleteResource(userId,resourceId);
+    }
 
 }

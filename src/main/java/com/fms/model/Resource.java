@@ -14,10 +14,20 @@ public class Resource implements java.io.Serializable {
     private String originName;
     private String resourceName;
     private Long resourceSize;
+    private String sizeName;
     private String  format;
     private Integer type;
     private Date createTime;
     private Date updateTime;
+
+
+    public String getSizeName() {
+        return sizeName;
+    }
+
+    public void setSizeName(String sizeName) {
+        this.sizeName = sizeName;
+    }
 
     public Integer getType() {
         return type;

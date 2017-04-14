@@ -72,7 +72,17 @@ public class ResourceController {
         resource.setOriginName(file.getOriginalFilename());
         resource.setResourceName(UUIDGenerator.getUUID() + "." + fileSuffix);
         resource.setResourceSize(file.getSize());
-
+        double size=StringUtil.div(Double.valueOf(resource.getResourceSize().toString()),1024,2);
+        String sizeName=size+"K";
+        if(size>=1024){
+            size=StringUtil.div(size,1024,2);
+            sizeName=size+"M";
+        }
+        if(size>=1024){
+            size=StringUtil.div(size,1024,2);
+            sizeName=size+"G";
+        }
+        resource.setSizeName(sizeName);
         String filePath=req.getServletContext().getRealPath("/")+"\\resources\\";
         if(!new File(filePath).exists() || !new File(filePath).isDirectory()){
             new File(filePath).mkdir();
@@ -129,6 +139,27 @@ public class ResourceController {
             bos.write(b);
             bos.flush();
         }
+    }
+
+    @RequestMapping(value = "/delete/{resourceId}",method = RequestMethod.POST)
+    public ResultTO deleteResource(HttpServletRequest req,@PathVariable("resourceId")Integer resourceId)
+            throws CommonException{
+        HttpSession session=req.getSession();
+        if(null == session.getAttribute("loginUser")){
+            throw new CommonException("请先登陆！");
+        }
+        User loginUser=(User)session.getAttribute("loginUser");
+        Resource resource=resourceService.getResourceById(loginUser.getUserId(), resourceId);
+        if(null == resource){
+            throw new CommonException("找不到资源！");
+        }
+        String filePath=req.getServletContext().getRealPath("/")+"/resources/"+resource.getResourceName();
+        File file=new File(filePath);
+        if(null !=file && file.exists()){
+            file.delete();
+        }
+        resourceService.deleteResource(loginUser.getUserId(),resourceId);
+        return new ResultTO();
     }
 
 

@@ -11,4 +11,42 @@
         select * from `user` where userName=#{userName}
     </select>
 
+    <select id="getUserByUserId" resultType="User">
+        select * from `user` where userId=#{userId}
+    </select>
+
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="userId" parameterType="User">
+        insert into `user`(userName,password,userType,disable,mobile,email,qq,updateTime)
+        values(#{userName},#{password},0,0,#{mobile},#{email},#{qq},now())
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update `user` set password=#{password},disable=#{disable},mobile=#{mobile},email=#{email},
+        qq=#{qq},updateTime=now() where userId=#{userId}
+    </update>
+
+    <select id="getUserCount" resultType="int">
+        select count(*) from `user` where 1=1
+        <if test="keyword!=null and keyword!=''">
+            and (mobile like concat("%",#{keyword},"%")
+            or email like concat("%",#{keyword},"%")
+            or qq like concat("%",#{keyword},"%")
+            or userName like concat("%",#{keyword},"%")
+            )
+        </if>
+    </select>
+
+    <select id="getUserList" resultType="User">
+        select * from `user` where 1=1
+        <if test="keyword!=null and keyword!=''">
+            and (mobile like concat("%",#{keyword},"%")
+            or email like concat("%",#{keyword},"%")
+            or qq like concat("%",#{keyword},"%")
+            or userName like concat("%",#{keyword},"%")
+            )
+        </if>
+        order by createTime desc limit #{startIndex},#{pageSize}
+    </select>
+
+
 </mapper>

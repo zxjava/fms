@@ -28,7 +28,7 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">文件列表</a></li>
                 <c:if test="${sessionScope.loginUser.userType==1}">
-                    <li><a href="/">用户管理</a></li>
+                    <li><a href="/user">用户管理</a></li>
                 </c:if>
                 <li><a href="/logout">退出</a></li>
             </ul>
@@ -52,11 +52,11 @@
                 </div>
 
                 <div style="float:right; margin-right:10px;">
-                    <button class="btn btn-default" style="width:80px;" >查&nbsp;&nbsp;询</button>
+                    <button id="query" class="btn btn-default" style="width:80px;" >查&nbsp;&nbsp;询</button>
                 </div>
 
                 <div style="float:right; margin-right:10px;">
-                    <input type="text" placeholder="文件名称" class="form-control" style="width:190px;">
+                    <input type="text" autofocus id="keyword" placeholder="文件名称" class="form-control" style="width:190px;">
                 </div>
                 <div style="clear:both"></div>
             </div>
@@ -81,7 +81,7 @@
                         <td>
                             ${item.originName}
                         </td>
-                        <td>${item.resourceSize}</td>
+                        <td>${item.sizeName}</td>
                         <td>${item.format}</td>
                         <td><fmt:formatDate value="${item.createTime}" type="both" dateStyle="long"/></td>
                         <td>
@@ -92,13 +92,45 @@
                             <c:if test="${item.type==1 && item.resourceSize<=10485760}">
                                 <a class="btn btn-success" href="/resources/${item.resourceName}" target="_blank">播放视频</a>
                             </c:if>
-                            <a class="btn btn-danger" href="/delete/${item.resourceId}">删除</a>
+                            <a class="btn btn-danger" onclick="del(${item.resourceId},'${item.originName}')"
+                               href="javascript:void(0);">
+                                删除</a>
                         </td>
                     </tr>
                 </c:forEach>
             </tbody>
         </table>
+
     </div>
+    <nav aria-label="Page navigation" style="float: right;margin-right: 50px;">
+        <ul class="pagination">
+            <li>
+                <a href="/?page=${result.page.currentPage-1}&keyword=${param.keyword}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <c:forEach begin="${result.page.beginPage}" end="${result.page.endPage}" varStatus="loop" var="p">
+                <c:if test="${loop.index==result.page.currentPage}">
+                    <li class="active"><a href="/?page=${loop.index}&keyword=${param.keyword}">${loop.index}</a></li>
+                </c:if>
+                <c:if test="${loop.index!=result.page.currentPage}">
+                    <li><a href="/?page=${loop.index}&keyword=${param.keyword}">${loop.index}</a></li>
+                </c:if>
+            </c:forEach>
+            <li>
+                <c:if test="${result.page.currentPage>=result.page.totalPage}">
+                    <a href="/?page=${result.page.totalPage}&keyword=${param.keyword}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </c:if>
+                <c:if test="${result.page.currentPage<result.page.totalPage}">
+                    <a href="/?page=${result.page.currentPage+1}&keyword=${param.keyword}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </c:if>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <%--model--%>
@@ -135,9 +167,51 @@
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.loadingoverlay/latest/loadingoverlay.min.js"></script>
 <script>
+    function del(resourceId,originName){
+        if(!resourceId){
+            alert('系统繁忙！');
+            return;
+        }
+        if(!confirm("确定要删除"+originName+"?")){
+            return;
+        }
+        $.ajax({
+            url:"/delete/"+resourceId,
+            type:"POST",
+            cache:false,
+            async : true,
+            dataType : "json",
+            headers: {
+                "Content-Type":"application/json"
+            },
+            beforeSend:function(req){
+                $.LoadingOverlay('show');
+            },
+            success:function(data){
+                $.LoadingOverlay('hide');
+                if(data && data.code && data.code==200){
+                    alert('删除成功！');
+                    history.go(0);
+                }else{
+                    alert(data.msg);
+                }
+            }
+        });
+    };
 
     $(function(){
 
+        $("#query").click(function(){
+            var keyword=$("#keyword").val();
+            keyword=encodeURIComponent(keyword);
+            window.location.href='/?keyword='+keyword;
+        });
+
+        $("#keyword").keydown(function(e){
+            if(e.keyCode==13){
+                $("#query").click();
+            }
+        });
 
         $(".upload-btn").click(function(event){
             $("#file").click();

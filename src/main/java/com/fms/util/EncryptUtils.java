@@ -23,7 +23,7 @@ package com.fms.util;
 //Filename:        EncryptUtils.java
 //Date:            2012-02-23
 //Author:          
-//Function:        åŠ å¯†
+//Function:        é”çŠ²ç˜‘
 //History:
 //
 //---------------------------------------------------------------------------
@@ -42,9 +42,9 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * <strong>Internal class, do not use directly.</strong>
- * 
+ *
  * String encryption utility methods.
- * 
+ *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
 public class EncryptUtils {
@@ -115,15 +115,15 @@ public class EncryptUtils {
 
 
 	/**
-	 * ½âÃÜº¯Êı
-	 * @param src ÃÜÎÄµÄ×Ö½ÚÊı×é
+	 * è§£å¯†å‡½æ•°
+	 * @param src å¯†æ–‡çš„å­—èŠ‚æ•°ç»„
 	 * @return
 	 */
 	public static byte[] decryptThreeDES(byte[] src,String secretkey) {
 		try {
 			SecretKey deskey = new SecretKeySpec(build3DesKey(secretkey), THREE_DES);
 			Cipher c1 = Cipher.getInstance(THREE_DES);
-			c1.init(Cipher.DECRYPT_MODE, deskey);    //³õÊ¼»¯Îª½âÃÜÄ£Ê½
+			c1.init(Cipher.DECRYPT_MODE, deskey);    //åˆå§‹åŒ–ä¸ºè§£å¯†æ¨¡å¼
 			return c1.doFinal(src);
 		} catch (NoSuchAlgorithmException e1) {
 			e1.printStackTrace();
@@ -136,15 +136,15 @@ public class EncryptUtils {
 	}
 
 	/**
-	 * ¼ÓÃÜ·½·¨
-	 * @param src Ô´Êı¾İµÄ×Ö½ÚÊı×é
+	 * åŠ å¯†æ–¹æ³•
+	 * @param src æºæ•°æ®çš„å­—èŠ‚æ•°ç»„
 	 * @return
 	 */
 	public static byte[] encryptThreeDES(byte[] src,String secretkey) {
 		try {
-			SecretKey deskey = new SecretKeySpec(build3DesKey(secretkey), THREE_DES);    //Éú³ÉÃÜÔ¿
-			Cipher c1 = Cipher.getInstance(THREE_DES);    //ÊµÀı»¯¸ºÔğ¼ÓÃÜ/½âÃÜµÄCipher¹¤¾ßÀà
-			c1.init(Cipher.ENCRYPT_MODE, deskey);    //³õÊ¼»¯Îª¼ÓÃÜÄ£Ê½
+			SecretKey deskey = new SecretKeySpec(build3DesKey(secretkey), THREE_DES);    //ç”Ÿæˆå¯†é’¥
+			Cipher c1 = Cipher.getInstance(THREE_DES);    //å®ä¾‹åŒ–è´Ÿè´£åŠ å¯†/è§£å¯†çš„Cipherå·¥å…·ç±»
+			c1.init(Cipher.ENCRYPT_MODE, deskey);    //åˆå§‹åŒ–ä¸ºåŠ å¯†æ¨¡å¼
 			return c1.doFinal(src);
 		} catch (NoSuchAlgorithmException e1) {
 			e1.printStackTrace();
@@ -158,31 +158,31 @@ public class EncryptUtils {
 
 
 	/*
-     * ¸ù¾İ×Ö·û´®Éú³ÉÃÜÔ¿×Ö½ÚÊı×é
-     * @param keyStr ÃÜÔ¿×Ö·û´®
+     * æ ¹æ®å­—ç¬¦ä¸²ç”Ÿæˆå¯†é’¥å­—èŠ‚æ•°ç»„
+     * @param keyStr å¯†é’¥å­—ç¬¦ä¸²
      * @return
      * @throws UnsupportedEncodingException
      */
 	public static byte[] build3DesKey(String keyStr) throws UnsupportedEncodingException {
-		byte[] key = new byte[24];    //ÉùÃ÷Ò»¸ö24Î»µÄ×Ö½ÚÊı×é£¬Ä¬ÈÏÀïÃæ¶¼ÊÇ0
-		byte[] temp = keyStr.getBytes("UTF-8");    //½«×Ö·û´®×ª³É×Ö½ÚÊı×é
+		byte[] key = new byte[24];    //å£°æ˜ä¸€ä¸ª24ä½çš„å­—èŠ‚æ•°ç»„ï¼Œé»˜è®¤é‡Œé¢éƒ½æ˜¯0
+		byte[] temp = keyStr.getBytes("UTF-8");    //å°†å­—ç¬¦ä¸²è½¬æˆå­—èŠ‚æ•°ç»„
 
         /*
-         * Ö´ĞĞÊı×é¿½±´
-         * System.arraycopy(Ô´Êı×é£¬´ÓÔ´Êı×éÄÄÀï¿ªÊ¼¿½±´£¬Ä¿±êÊı×é£¬¿½±´¶àÉÙÎ»)
+         * æ‰§è¡Œæ•°ç»„æ‹·è´
+         * System.arraycopy(æºæ•°ç»„ï¼Œä»æºæ•°ç»„å“ªé‡Œå¼€å§‹æ‹·è´ï¼Œç›®æ ‡æ•°ç»„ï¼Œæ‹·è´å¤šå°‘ä½)
          */
 		if(key.length > temp.length){
-			//Èç¹ûtemp²»¹»24Î»£¬Ôò¿½±´tempÊı×éÕû¸ö³¤¶ÈµÄÄÚÈİµ½keyÊı×éÖĞ
+			//å¦‚æœtempä¸å¤Ÿ24ä½ï¼Œåˆ™æ‹·è´tempæ•°ç»„æ•´ä¸ªé•¿åº¦çš„å†…å®¹åˆ°keyæ•°ç»„ä¸­
 			System.arraycopy(temp, 0, key, 0, temp.length);
 		}else{
-			//Èç¹ûtemp´óÓÚ24Î»£¬Ôò¿½±´tempÊı×é24¸ö³¤¶ÈµÄÄÚÈİµ½keyÊı×éÖĞ
+			//å¦‚æœtempå¤§äº24ä½ï¼Œåˆ™æ‹·è´tempæ•°ç»„24ä¸ªé•¿åº¦çš„å†…å®¹åˆ°keyæ•°ç»„ä¸­
 			System.arraycopy(temp, 0, key, 0, key.length);
 		}
 		return key;
 	}
 
 	/**
-	 * MACËã·¨¿ÉÑ¡ÒÔÏÂ¶àÖÖËã·¨
+	 * MACç®—æ³•å¯é€‰ä»¥ä¸‹å¤šç§ç®—æ³•
 	 *
 	 * <pre>
 	 * HmacMD5
@@ -195,7 +195,7 @@ public class EncryptUtils {
 	public static final String KEY_MAC = "HmacMD5";
 
 	/**
-	 * BASE64½âÃÜ
+	 * BASE64è§£å¯†
 	 *
 	 * @param key
 	 * @return
@@ -206,7 +206,7 @@ public class EncryptUtils {
 	}
 
 	/**
-	 * BASE64¼ÓÃÜ
+	 * BASE64åŠ å¯†
 	 *
 	 * @param key
 	 * @return
@@ -217,7 +217,7 @@ public class EncryptUtils {
 	}
 
 	/**
-	 * MD5¼ÓÃÜ
+	 * MD5åŠ å¯†
 	 *
 	 * @param data
 	 * @return
@@ -233,7 +233,7 @@ public class EncryptUtils {
 	}
 
 	/**
-	 * SHA¼ÓÃÜ
+	 * SHAåŠ å¯†
 	 *
 	 * @param data
 	 * @return
@@ -249,7 +249,7 @@ public class EncryptUtils {
 	}
 
 	/**
-	 * ³õÊ¼»¯HMACÃÜÔ¿
+	 * åˆå§‹åŒ–HMACå¯†é’¥
 	 *
 	 * @return
 	 * @throws Exception
@@ -262,7 +262,7 @@ public class EncryptUtils {
 	}
 
 	/**
-	 * HMAC¼ÓÃÜ
+	 * HMACåŠ å¯†
 	 *
 	 * @param data
 	 * @param key
@@ -282,11 +282,11 @@ public class EncryptUtils {
 
 
 	/**
-	 * Éú³ÉÇ©ÃûÊı¾İ
+	 * ç”Ÿæˆç­¾åæ•°æ®
 	 *
-	 * @param data ´ı¼ÓÃÜµÄÊı¾İ
-	 * @param key  ¼ÓÃÜÊ¹ÓÃµÄkey
-	 * @return Éú³ÉMD5±àÂëµÄ×Ö·û´®
+	 * @param data å¾…åŠ å¯†çš„æ•°æ®
+	 * @param key  åŠ å¯†ä½¿ç”¨çš„key
+	 * @return ç”ŸæˆMD5ç¼–ç çš„å­—ç¬¦ä¸²
 	 */
 	public static String encryptHMAC_SHA1(byte[] data, byte[] key) throws Exception {
 		SecretKeySpec signingKey = new SecretKeySpec(key, HMAC_SHA1);

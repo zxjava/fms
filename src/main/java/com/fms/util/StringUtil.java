@@ -23,12 +23,12 @@ import java.util.regex.Pattern;
  */
 public class StringUtil {
     /**
-     * ¼ì²âÊÇ·ñÓĞÌØÊâ×Ö·û
+     * æ£€æµ‹æ˜¯å¦æœ‰ç‰¹æ®Šå­—ç¬¦
      * @param text
      * @return
      */
     public static boolean chkSpecialString(String text) {
-        String str = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~£¡@#£¤%¡­¡­&*£¨£©¡ª¡ª+|{}¡¾¡¿¡®£»£º¡±¡°¡¯¡££¬¡¢£¿]";
+        String str = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~ï¼@#ï¿¥%â€¦â€¦&*ï¼ˆï¼‰â€”â€”+|{}ã€ã€‘â€˜ï¼›ï¼šâ€â€œâ€™ã€‚ï¼Œã€ï¼Ÿ]";
         Pattern pattern = Pattern.compile(str);
         Matcher match = pattern.matcher(text);
         if (match.find())
@@ -38,8 +38,8 @@ public class StringUtil {
     }
 
     /**
-     * ¼ì²âSQL¹Ø¼ü×Ö·ÀÖ¹SQL×¢Èë
-     * @param text ÎÄ±¾ÄÚÈİ
+     * æ£€æµ‹SQLå…³é”®å­—é˜²æ­¢SQLæ³¨å…¥
+     * @param text æ–‡æœ¬å†…å®¹
      * @return
      */
     public static String chkSQLString(String text) {
@@ -101,11 +101,11 @@ public class StringUtil {
     }
 
     /**
-     * ¶ÔdoubleÊı¾İ½øĞĞÈ¡¾«¶È.
-     * @param value  doubleÊı¾İ.
-     * @param scale  ¾«¶ÈÎ»Êı(±£ÁôµÄĞ¡ÊıÎ»Êı).
-     * @param roundingMode  ¾«¶ÈÈ¡Öµ·½Ê½.[BigDecimal.ROUND_DOWNÏòÏÂÈ¡Õû;BigDecimal.ROUND_UPÏòÉÏÈ¡Õû;BigDecimal.ROUND_HALF_UPËÄÉáÎåÈë]
-     * @return ¾«¶È¼ÆËãºóµÄÊı¾İ.
+     * å¯¹doubleæ•°æ®è¿›è¡Œå–ç²¾åº¦.
+     * @param value  doubleæ•°æ®.
+     * @param scale  ç²¾åº¦ä½æ•°(ä¿ç•™çš„å°æ•°ä½æ•°).
+     * @param roundingMode  ç²¾åº¦å–å€¼æ–¹å¼.[BigDecimal.ROUND_DOWNå‘ä¸‹å–æ•´;BigDecimal.ROUND_UPå‘ä¸Šå–æ•´;BigDecimal.ROUND_HALF_UPå››èˆäº”å…¥]
+     * @return ç²¾åº¦è®¡ç®—åçš„æ•°æ®.
      */
     public static double round(double value, int scale,int roundingMode) {
         BigDecimal bd = new BigDecimal(value);
@@ -126,7 +126,7 @@ public class StringUtil {
 
 
     /**
-     * double Ïà¼Ó
+     * double ç›¸åŠ 
      * @param d1
      * @param d2
      * @return
@@ -139,7 +139,7 @@ public class StringUtil {
 
 
     /**
-     * double Ïà¼õ
+     * double ç›¸å‡
      * @param d1
      * @param d2
      * @return
@@ -151,7 +151,7 @@ public class StringUtil {
     }
 
     /**
-     * double ³Ë·¨
+     * double ä¹˜æ³•
      * @param d1
      * @param d2
      * @return
@@ -164,15 +164,15 @@ public class StringUtil {
 
 
     /**
-     * double ³ı·¨
+     * double é™¤æ³•
      * @param d1
      * @param d2
-     * @param scale ËÄÉáÎåÈë Ğ¡ÊıµãÎ»Êı
+     * @param scale å››èˆäº”å…¥ å°æ•°ç‚¹ä½æ•°
      * @return
      */
     public static double div(double d1,double d2,int scale){
-        //  µ±È»ÔÚ´ËÖ®Ç°£¬ÄãÒªÅĞ¶Ï·ÖÄ¸ÊÇ·ñÎª0£¬
-        //  Îª0Äã¿ÉÒÔ¸ù¾İÊµ¼ÊĞèÇó×öÏàÓ¦µÄ´¦Àí
+        //  å½“ç„¶åœ¨æ­¤ä¹‹å‰ï¼Œä½ è¦åˆ¤æ–­åˆ†æ¯æ˜¯å¦ä¸º0ï¼Œ
+        //  ä¸º0ä½ å¯ä»¥æ ¹æ®å®é™…éœ€æ±‚åšç›¸åº”çš„å¤„ç†
 
         BigDecimal bd1 = new BigDecimal(Double.toString(d1));
         BigDecimal bd2 = new BigDecimal(Double.toString(d2));
@@ -181,7 +181,7 @@ public class StringUtil {
     }
 
     /**
-     * @return ·µ»Ø°ë·Ö±È 50%
+     * @return è¿”å›åŠåˆ†æ¯” 50%
      */
     public static String numDivide(double d1,int scale){
         NumberFormat nFromat = NumberFormat.getPercentInstance();
@@ -199,7 +199,7 @@ public class StringUtil {
     }
 
     /**
-     * »ñÈ¡cookie
+     * è·å–cookie
      * @param request
      * @param cookieName
      * @return
@@ -222,13 +222,13 @@ public class StringUtil {
     }
 
     /**
-     * Ğ´Cookie
+     * å†™Cookie
      *
      * @param request
      * @param response
      * @param cookieKey
      * @param cookieValue
-     * @param maxAgeByDays Cookie±£´æµÄÌìÊı
+     * @param maxAgeByDays Cookieä¿å­˜çš„å¤©æ•°
      */
     public static void writeCookie(HttpServletRequest request, HttpServletResponse response,boolean httpOnly, String cookieKey, String cookieValue, int maxAgeByDays) {
         int day = 24 * 60 * 60;
@@ -252,7 +252,7 @@ public class StringUtil {
     }
 
     /**
-     * ½«ÎÄ¼ş¶ÁÈ¡ÎªString
+     * å°†æ–‡ä»¶è¯»å–ä¸ºString
      * @param filePath
      * @return
      */
@@ -283,7 +283,7 @@ public class StringUtil {
     }
 
     /**
-     * °´ĞĞ¶ÁÈ¡ÎÄ¼şÎª×Ö·û´®
+     * æŒ‰è¡Œè¯»å–æ–‡ä»¶ä¸ºå­—ç¬¦ä¸²
      * @param filePath
      * @return
      */
@@ -315,29 +315,29 @@ public class StringUtil {
     }
 
     /**
-     * Éú³É¾²Ì¬HTMLÒ³ÃæµÄ·½·¨
+     * ç”Ÿæˆé™æ€HTMLé¡µé¢çš„æ–¹æ³•
      *
      * @param request
-     *            ÇëÇó¶ÔÏó
+     *            è¯·æ±‚å¯¹è±¡
      * @param response
-     *            ÏìÓ¦¶ÔÏó
+     *            å“åº”å¯¹è±¡
      * @param servletContext
-     *            ServletÉÏÏÂÎÄ
+     *            Servletä¸Šä¸‹æ–‡
      * @param fileName
-     *            ÎÄ¼şÃû³Æ
+     *            æ–‡ä»¶åç§°
      * @param fileFullPath
-     *            ÎÄ¼şÍêÕûÂ·¾¶
+     *            æ–‡ä»¶å®Œæ•´è·¯å¾„
      * @param jspPath
-     *            ĞèÒªÉú³É¾²Ì¬ÎÄ¼şµÄJSPÂ·¾¶(Ïà¶Ô¼´¿É)
+     *            éœ€è¦ç”Ÿæˆé™æ€æ–‡ä»¶çš„JSPè·¯å¾„(ç›¸å¯¹å³å¯)
      * @throws IOException
      * @throws ServletException
      */
     public static void createHtml(HttpServletRequest request, HttpServletResponse response,
-                       ServletContext servletContext, String fileName, String fileFullPath, String jspPath)
+                                  ServletContext servletContext, String fileName, String fileFullPath, String jspPath)
             throws ServletException, IOException {
-//        response.setContentType("text/html;charset=gb2312");// ÉèÖÃHTML½á¹ûÁ÷±àÂë(¼´HTMLÎÄ¼ş±àÂë)
-        RequestDispatcher rd = servletContext.getRequestDispatcher(jspPath);// µÃµ½JSP×ÊÔ´
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();// ÓÃÓÚ´ÓServletOutputStreamÖĞ½ÓÊÕ×ÊÔ´
+//        response.setContentType("text/html;charset=gb2312");// è®¾ç½®HTMLç»“æœæµç¼–ç (å³HTMLæ–‡ä»¶ç¼–ç )
+        RequestDispatcher rd = servletContext.getRequestDispatcher(jspPath);// å¾—åˆ°JSPèµ„æº
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();// ç”¨äºä»ServletOutputStreamä¸­æ¥æ”¶èµ„æº
         final ServletOutputStream servletOuputStream = new ServletOutputStream() {
             @Override
             public boolean isReady() {
@@ -347,7 +347,7 @@ public class StringUtil {
             @Override
             public void setWriteListener(WriteListener writeListener) {
 
-            }// ÓÃÓÚ´ÓHttpServletResponseÖĞ½ÓÊÕ×ÊÔ´
+            }// ç”¨äºä»HttpServletResponseä¸­æ¥æ”¶èµ„æº
             public void write(byte[] b, int off, int len) {
                 byteArrayOutputStream.write(b, off, len);
             }
@@ -356,8 +356,8 @@ public class StringUtil {
                 byteArrayOutputStream.write(b);
             }
         };
-        final PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream));// °Ñ×ª»»×Ö½ÚÁ÷×ª»»³É×Ö·ûÁ÷
-        HttpServletResponse httpServletResponse = new HttpServletResponseWrapper(response) {// ÓÃÓÚ´Óresponse»ñÈ¡½á¹ûÁ÷×ÊÔ´(ÖØĞ´ÁËÁ½¸ö·½·¨)
+        final PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream));// æŠŠè½¬æ¢å­—èŠ‚æµè½¬æ¢æˆå­—ç¬¦æµ
+        HttpServletResponse httpServletResponse = new HttpServletResponseWrapper(response) {// ç”¨äºä»responseè·å–ç»“æœæµèµ„æº(é‡å†™äº†ä¸¤ä¸ªæ–¹æ³•)
             public ServletOutputStream getOutputStream() {
                 return servletOuputStream;
             }
@@ -366,15 +366,15 @@ public class StringUtil {
                 return printWriter;
             }
         };
-        rd.include(request, httpServletResponse);// ·¢ËÍ½á¹ûÁ÷
-        printWriter.flush();// Ë¢ĞÂ»º³åÇø£¬°Ñ»º³åÇøµÄÊı¾İÊä³ö
+        rd.include(request, httpServletResponse);// å‘é€ç»“æœæµ
+        printWriter.flush();// åˆ·æ–°ç¼“å†²åŒºï¼ŒæŠŠç¼“å†²åŒºçš„æ•°æ®è¾“å‡º
         FileOutputStream fileOutputStream = new FileOutputStream(fileFullPath);
         OutputStreamWriter osw=new OutputStreamWriter(fileOutputStream,"utf-8");
         osw.write(byteArrayOutputStream.toString());
-//        byteArrayOutputStream.writeTo(fileOutputStream);// °ÑbyteArrayOuputStreamÖĞµÄ×ÊÔ´È«²¿Ğ´Èëµ½fileOuputStreamÖĞ
+//        byteArrayOutputStream.writeTo(fileOutputStream);// æŠŠbyteArrayOuputStreamä¸­çš„èµ„æºå…¨éƒ¨å†™å…¥åˆ°fileOuputStreamä¸­
         byteArrayOutputStream.close();
-        fileOutputStream.close();// ¹Ø±ÕÊä³öÁ÷£¬²¢ÊÍ·ÅÏà¹Ø×ÊÔ´
-//        response.sendRedirect(fileName);// ·¢ËÍÖ¸¶¨ÎÄ¼şÁ÷µ½¿Í»§¶Ë
+        fileOutputStream.close();// å…³é—­è¾“å‡ºæµï¼Œå¹¶é‡Šæ”¾ç›¸å…³èµ„æº
+//        response.sendRedirect(fileName);// å‘é€æŒ‡å®šæ–‡ä»¶æµåˆ°å®¢æˆ·ç«¯
     }
 
 }

@@ -49,6 +49,9 @@ public class IndexController {
         if(!loginUser.getPassword().equals(EncryptUtils.encryptMD5(user.getPassword()))){
             throw new CommonException("密码错误！");
         }
+        if(loginUser.getDisable().equals(User.DISABLE)){
+            throw new CommonException("用户："+loginUser.getUserName()+"已被禁用！");
+        }
         req.getSession().setAttribute("loginUser",loginUser);
         return result;
     }

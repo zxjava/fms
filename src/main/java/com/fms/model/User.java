@@ -18,7 +18,43 @@ public class User implements java.io.Serializable {
     private Integer userType;
     private Integer disable;
     private Date createTime;
+    private Date updateTime;
+    private String mobile;
+    private String email;
+    private String qq;
 
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
 
     public Integer getUserId() {
         return userId;
