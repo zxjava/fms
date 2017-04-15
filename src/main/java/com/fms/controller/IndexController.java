@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 /**
  * Created by Administrator on 2017/4/9.
@@ -78,7 +79,7 @@ public class IndexController {
 
     @RequestMapping(value = {"","/"})
     public ModelAndView getResourceList(HttpServletRequest req,HttpServletResponse res,String keyword,
-                                        Integer page){
+                                        Integer page)throws Exception{
         HttpSession session=req.getSession();
         if(null == session.getAttribute("loginUser")){
             return new ModelAndView("redirect:/login");

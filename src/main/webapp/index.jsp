@@ -56,7 +56,7 @@
                 </div>
 
                 <div style="float:right; margin-right:10px;">
-                    <input type="text" autofocus id="keyword" placeholder="文件名称" class="form-control" style="width:190px;">
+                    <input type="text" autofocus id="keyword" value="${param.keyword}" placeholder="文件名称" class="form-control" style="width:190px;">
                 </div>
                 <div style="clear:both"></div>
             </div>

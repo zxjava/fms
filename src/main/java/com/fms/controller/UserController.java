@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 /**
  * UserController
@@ -28,7 +29,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/user",method = RequestMethod.GET)
-    public ModelAndView getUserList(HttpServletRequest req,String keyword,Integer page)throws CommonException{
+    public ModelAndView getUserList(HttpServletRequest req,String keyword,Integer page)throws CommonException,Exception{
         HttpSession session=req.getSession();
         if(null == session.getAttribute("loginUser")){
             return new ModelAndView("redirect:/login");
@@ -110,11 +111,11 @@ public class UserController {
         if(null ==updUser){
             throw new CommonException("找不到用户！");
         }
-        if(StringUtil.chkSpecialString(user.getPassword())
-                || (user.getPassword().trim().length()>0 &&
-                (user.getPassword().trim().length()<6 || user.getPassword().trim().length()>18))){
+        if(StringUtil.isNotEmpty(user.getPassword()) &&
+                (user.getPassword().trim().length()<6 || user.getPassword().trim().length()>18 ||
+                        StringUtil.chkSpecialString(user.getPassword()) )){
             throw new CommonException("密码格式错误！");
-        }else{
+        }else if(StringUtil.isNotEmpty(user.getPassword())){
             updUser.setPassword(EncryptUtils.encryptMD5(user.getPassword()));
         }
         if(StringUtil.isNotEmpty(user.getMobile()) && (!StringUtil.isInteger(user.getMobile())

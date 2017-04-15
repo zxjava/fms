@@ -60,9 +60,9 @@ public class ResourceController {
         }
 
         Resource resource=new Resource();
-        if(video_format.indexOf(fileSuffix)>0){
+        if(video_format.indexOf(fileSuffix)>-1){
             resource.setType(1);
-        }else if(img_format.indexOf(fileSuffix)>0){
+        }else if(img_format.indexOf(fileSuffix)>-1){
             resource.setType(2);
         }else{
             resource.setType(3);
