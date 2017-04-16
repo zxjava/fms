@@ -14,13 +14,10 @@
 <nav class="navbar navbar-inverse" style="width: 100%;">
     <div class="container-fluid" style="width: 100%;">
         <div class="navbar-header">
-            <%--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false">--%>
-                <%--<span class="sr-only">Toggle navigation</span>--%>
-                <%--<span class="icon-bar"></span>--%>
-                <%--<span class="icon-bar"></span>--%>
-                <%--<span class="icon-bar"></span>--%>
-            <%--</button>--%>
-            <a class="navbar-brand" href="/">欢迎您！${loginUser.userName}</a>
+            <a  href="javascript:void(0);" data-toggle="modal" data-target="#person">
+                <img alt="" title="${sessionScope.loginUser.userName}" class="avatar" src="${sessionScope.loginUser.avatar}"/>
+            </a>
+            <%--<a class="navbar-brand" href="/">欢迎您！${loginUser.userName}</a>--%>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -162,6 +159,58 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<%-- person model--%>
+<div class="modal fade" tabindex="-1" role="dialog" id="person">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">个人信息</h4>
+            </div>
+            <div class="modal-body" style="">
+                <div style="text-align: center">
+                    <img style="width:60px;height:60px;" src="${sessionScope.loginUser.avatar}" />
+                </div>
+                <div>
+                    <label>头像</label><br/>
+                    <input type="text" id="perfileName" class="form-control upload" readonly>
+                    <a href="javascript:;" class="btn btn-default perupload-btn">
+                        浏览</a>
+                    <input type="file" name="file" id="perfile" class="upload-inp"/>
+                </div>
+                <hr/>
+                <div>
+                    <label>用户名</label>
+                    <input type="text" readonly value="${sessionScope.loginUser.userName}" class="form-control">
+                </div>
+                <br>
+                <div>
+                    <label>密码</label>
+                    <input type="password" id="perpassword" class="form-control" placeholder="密码">
+                </div>
+                <br>
+                <div>
+                    <label>手机号</label>
+                    <input type="text" id="permobile" value="${sessionScope.loginUser.mobile}" class="form-control" placeholder="手机号">
+                </div>
+                <br>
+                <div>
+                    <label>Email</label>
+                    <input type="text" id="peremail" value="${sessionScope.loginUser.email}" class="form-control" placeholder="Email">
+                </div>
+                <br>
+                <div>
+                    <label>QQ</label>
+                    <input type="text" id="perqq" value="${sessionScope.loginUser.qq}" class="form-control" placeholder="QQ">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="savePerson" class="btn btn-primary">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
@@ -216,12 +265,15 @@
         $(".upload-btn").click(function(event){
             $("#file").click();
         });
-
-
-//        var fd = new FormData();
+        $(".perupload-btn").click(function(event){
+            $("#perfile").click();
+        });
 
         $("#file").change(function () {
             $("#fileName").val($("#file").val());
+        });
+        $("#perfile").change(function () {
+            $("#perfileName").val($("#perfile").val());
         });
 
         $("#upload").click(function(){
@@ -255,6 +307,62 @@
                     if(data && data.code && data.code==200){
                         history.go(0);
                         alert("上传成功");
+                    }else{
+                        alert(data.msg);
+                    }
+                }
+            });
+        });
+
+        var perForm={
+            mobile:$("#permobile"),
+            email:$("#peremail"),
+            qq:$("#perqq"),
+            password:$("#perpassword"),
+            userId:${sessionScope.loginUser.userId}
+        };
+
+        $("#savePerson").click(function(){
+            var reg=/^(\w){6,18}$/;
+            if(perForm.password.val() && !reg.exec(perForm.password.val())){
+                alert("密码必须在6到18个数字或字母");
+                return;
+            }
+            if(perForm.mobile.val().trim().length>11 || isNaN(perForm.mobile.val()) ){
+                alert('手机号必须是11位数字！');
+                return;
+            }
+            if(perForm.email.val().trim().length>50){
+                alert('Email过长！');
+                return;
+            }
+            if(perForm.qq.val().trim().length>20){
+                alert('QQ过长！');
+                return;
+            }
+            $.ajax({
+                url:"/user/modify",
+                type:"POST",
+                cache:false,
+                dataType:"json",
+                data:JSON.stringify({
+                    "userId":perForm.userId,
+                    "mobile":perForm.mobile.val(),
+                    "email":perForm.email.val(),
+                    "qq":perForm.qq.val(),
+                    "password":perForm.password.val()
+                }),
+                headers: {
+                    "Content-Type":"application/json"
+                },
+                beforeSend:function(req){
+                    $.LoadingOverlay('show');
+                },
+                success:function(data){
+                    $.LoadingOverlay("hide");
+                    if(data && data.code && data.code==200){
+                        history.go(0);
+                        alert("修改成功");
                     }else{
                         alert(data.msg);
                     }

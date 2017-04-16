@@ -8,6 +8,7 @@ import com.fms.util.EncryptUtils;
 import com.fms.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -137,6 +138,57 @@ public class UserController {
         user.setDisable(User.NO_DISABLE);
         user.setUserType(User.TYPE_USER);
         userService.updateUserInfo(updUser);
+        return new ResultTO();
+    }
+
+    @RequestMapping(value = "/user/modify",method = RequestMethod.POST)
+    public ResultTO modifyUser(HttpServletRequest req,HttpServletResponse res,
+                            @RequestBody User user)throws CommonException,Exception{
+        HttpSession session=req.getSession();
+        if(null == session.getAttribute("loginUser")){
+            res.sendRedirect("/login");
+        }
+        User loginUser=(User)session.getAttribute("loginUser");
+        if(null == loginUser){
+            res.sendRedirect("/login");
+        }
+        if(null == user){
+            throw new CommonException("参数不合法！");
+        }
+        User updUser=userService.getUserByUserId(user.getUserId());
+        if(null ==updUser){
+            throw new CommonException("找不到用户！");
+        }
+        if(!loginUser.getUserId().equals(user.getUserId())){
+            throw new CommonException("只能修改自己！");
+        }
+        if(StringUtil.isNotEmpty(user.getPassword()) &&
+                (user.getPassword().trim().length()<6 || user.getPassword().trim().length()>18 ||
+                        StringUtil.chkSpecialString(user.getPassword()) )){
+            throw new CommonException("密码格式错误！");
+        }else if(StringUtil.isNotEmpty(user.getPassword())){
+            updUser.setPassword(EncryptUtils.encryptMD5(user.getPassword()));
+        }
+        if(StringUtil.isNotEmpty(user.getMobile()) && (!StringUtil.isInteger(user.getMobile())
+                || user.getMobile().trim().length()>11)){
+            throw new CommonException("手机号格式错误！");
+        }else{
+            updUser.setMobile(user.getMobile());
+        }
+        if(user.getEmail().trim().length()>50){
+            throw new CommonException("Email过长！");
+        }else{
+            updUser.setEmail(user.getEmail());
+        }
+        if(user.getQq().trim().length()>20){
+            throw new CommonException("QQ过长！");
+        }else{
+            updUser.setQq(user.getQq());
+        }
+        user.setDisable(User.NO_DISABLE);
+        user.setUserType(User.TYPE_USER);
+        userService.updateUserInfo(updUser);
+        session.setAttribute("loginUser",userService.getUserByUserId(user.getUserId()));
         return new ResultTO();
     }
 

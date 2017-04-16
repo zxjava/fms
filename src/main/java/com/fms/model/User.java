@@ -22,7 +22,15 @@ public class User implements java.io.Serializable {
     private String mobile;
     private String email;
     private String qq;
+    private String avatar;
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public Date getUpdateTime() {
         return updateTime;
