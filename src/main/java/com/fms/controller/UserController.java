@@ -2,10 +2,12 @@ package com.fms.controller;
 
 import com.fms.dto.ResultTO;
 import com.fms.exception.CommonException;
+import com.fms.model.Resource;
 import com.fms.model.User;
 import com.fms.service.UserService;
 import com.fms.util.EncryptUtils;
 import com.fms.util.StringUtil;
+import com.fms.util.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -14,6 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URLDecoder;
 
 /**
@@ -188,7 +194,7 @@ public class UserController {
         user.setDisable(User.NO_DISABLE);
         user.setUserType(User.TYPE_USER);
         userService.updateUserInfo(updUser);
-        session.setAttribute("loginUser",userService.getUserByUserId(user.getUserId()));
+        session.setAttribute("loginUser", userService.getUserByUserId(user.getUserId()));
         return new ResultTO();
     }
 
@@ -215,9 +221,63 @@ public class UserController {
         if(delUser.getUserType().equals(User.TYPE_ADMIN)){
             throw new CommonException("这是管理员账号，无法操作！");
         }
-        delUser.setDisable(User.DISABLE.equals(delUser.getDisable())?User.NO_DISABLE:User.DISABLE);
+        delUser.setDisable(User.DISABLE.equals(delUser.getDisable()) ? User.NO_DISABLE : User.DISABLE);
         userService.updateUserInfo(delUser);
         return new ResultTO();
+    }
+
+
+    @RequestMapping(value = "/user/upload/avatar",method = RequestMethod.POST)
+    public ResultTO uploadAvatar(HttpServletRequest req,HttpServletResponse res,
+                                   @RequestParam("file")CommonsMultipartFile file)throws CommonException,Exception{
+        ResultTO result=new ResultTO();
+        HttpSession session=req.getSession();
+        if(null == session.getAttribute("loginUser")){
+            throw new CommonException("用户未登录！");
+        }
+
+        User loginUser=(User)session.getAttribute("loginUser");
+
+        if(null == file){
+            throw new CommonException("请选择文件！");
+        }
+
+        String fileFormat="jpg,jpeg,png";
+        String originalName=file.getOriginalFilename();
+        String fileSuffix=originalName.split("\\.")[originalName.split("\\.").length-1];
+        if(fileFormat.indexOf(fileSuffix)<0){
+            throw new CommonException("文件格式不合法，头像文件只支持jpg，jpeg，png！");
+        }
+        if(file.getSize()>(1024*1024*2)){//2M
+            throw new CommonException("头像文件不能超过2M！");
+        }
+
+        String filePath=req.getServletContext().getRealPath("/")+"\\resources\\";
+        if(!new File(filePath).exists() || !new File(filePath).isDirectory()){
+            new File(filePath).mkdir();
+        }
+
+        String fileName=UUIDGenerator.getUUID()+"."+fileSuffix;
+        File fileData=new File(filePath+fileName);
+        while(fileData.exists()){
+            fileName=UUIDGenerator.getUUID() + "." + fileSuffix;
+            fileData=new File(filePath+fileName);
+        }
+
+        BufferedInputStream bis=new BufferedInputStream(file.getInputStream());
+        BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(fileData));
+        int b;
+        while((b=bis.read())!=-1){
+            bos.write(b);
+            bos.flush();
+        }
+        bis.close();
+        bos.close();
+        User user=userService.getUserByUserId(loginUser.getUserId());
+        user.setAvatar("/resources/"+fileName);
+        userService.updateUserInfo(user);
+        req.getSession().setAttribute("loginUser",user);
+        return result;
     }
 
 }

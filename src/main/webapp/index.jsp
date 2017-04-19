@@ -174,8 +174,9 @@
                 <div>
                     <label>头像</label><br/>
                     <input type="text" id="perfileName" class="form-control upload" readonly>
-                    <a href="javascript:;" class="btn btn-default perupload-btn">
+                    <a href="javascript:void(0);" class="btn btn-default perselect-btn">
                         浏览</a>
+                    <a href="javascript:void(0);" class="btn btn-info perupload">上传</a>
                     <input type="file" name="file" id="perfile" class="upload-inp"/>
                 </div>
                 <hr/>
@@ -265,7 +266,7 @@
         $(".upload-btn").click(function(event){
             $("#file").click();
         });
-        $(".perupload-btn").click(function(event){
+        $(".perselect-btn").click(function(event){
             $("#perfile").click();
         });
 
@@ -274,6 +275,38 @@
         });
         $("#perfile").change(function () {
             $("#perfileName").val($("#perfile").val());
+        });
+
+        $(".perupload").click(function(){
+            if(!$("#perfile") || $("#perfile").length<0 || !$("#perfile")[0].files || $("#perfile")[0].files.length<=0){
+                alert("请选择要上传的文件！");
+                return ;
+            }
+            var fileInput=$("#perfile")[0];
+            var fileTypes="jpg,jpeg,png";
+            var fileType=fileInput.files[0].name.split(".")[fileInput.files[0].name.split(".").length-1];
+            if(!fileInput.files[0].type || fileTypes.indexOf(fileType)<0){
+                alert("文件格式非法！");
+                return ;
+            }
+
+            var fd=new FormData();
+            fd.append("file",fileInput.files[0]);
+            $.ajax({
+                url:"/user/upload/avatar",
+                type:"POST",
+                cache:false,
+                data:fd,
+                processData:false,
+                contentType:false,
+                success:function(data){
+                    if(data && data.code && data.code==200){
+                        history.go(0);
+                    }else{
+                        alert(data.msg);
+                    }
+                }
+            });
         });
 
         $("#upload").click(function(){
