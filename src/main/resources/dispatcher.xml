@@ -63,6 +63,6 @@
 
     <!-- 配置拦截器 -->
     <!--<mvc:interceptors>-->
-        <!--<bean class="com.shpj.legal.interceptor.LoginInterceptor" />-->
+        <!--<bean class="com.shpj.legal.interceptor.LoginFilter" />-->
     <!--</mvc:interceptors>-->
 </beans>

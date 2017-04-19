@@ -146,8 +146,8 @@
 	</bean>
 
 
-	<!--<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>-->
+	<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
 
-	<!--<task:scheduler id="qbScheduler" pool-size="10"/>-->
+	<task:scheduler id="qbScheduler" pool-size="10"/>
 
 </beans>
