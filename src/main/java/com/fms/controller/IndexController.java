@@ -88,6 +88,7 @@ public class IndexController {
 
         resdata.put("loginUser",loginUser);
         resdata.put("token", token);
+        result.setResult(resdata);
         return result;
     }
 

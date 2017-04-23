@@ -215,7 +215,7 @@ public class ResourceController {
         }
     }
 
-    @RequestMapping(value = "/download/{resourceId}",method = RequestMethod.GET)
+    @RequestMapping(value = "/api/download/{resourceId}",method = RequestMethod.GET)
     public void apidownload(HttpServletRequest req,HttpServletResponse res,String token,
                          @PathVariable("resourceId")Integer resourceId)throws CommonException,Exception{
 
@@ -276,7 +276,7 @@ public class ResourceController {
     }
 
 
-    @RequestMapping(value = "/delete/{resourceId}",method = RequestMethod.POST)
+    @RequestMapping(value = "/api/delete/{resourceId}",method = RequestMethod.POST)
     public ResultTO apideleteResource(HttpServletRequest req,@PathVariable("resourceId")Integer resourceId,
                                       String token)
             throws CommonException{
