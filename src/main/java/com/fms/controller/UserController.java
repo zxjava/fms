@@ -314,7 +314,7 @@ public class UserController {
         return new ResultTO();
     }
 
-    @RequestMapping(value = "api/user/modify",method = RequestMethod.POST)
+    @RequestMapping(value = "/api/user/modify",method = RequestMethod.POST)
     public ResultTO apimodifyUser(HttpServletRequest req,HttpServletResponse res,
                                @RequestBody User user,String token)throws CommonException,Exception{
         Integer userId= UserSession.getAdmin(token);
